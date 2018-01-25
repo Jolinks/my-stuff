@@ -48,14 +48,28 @@
 
 (init-courses!)
 
+(defn test-hello []
+  (response "World")
+  )
+
+(defn test-echo []
+  (fn [request]
+    (let [params (:params request)]
+      (response (str "you have inputted: " (:echo params))))))
+
+(defn test-index []
+  (response {:template "index.html",
+             :model {:id "20180125"
+                     :name "SJK"
+                     :courses (get-courses)}}))
+
 (defroutes app-routes
 
-           (GET "/hello" [] (response "world"))
+           (GET "/hello" [] (test-hello))
 
-           (GET "/" request (response {:template "index.html",
-                                       :model {:id "20180125"
-                                               :name "SJK"
-                                               :courses (get-courses)}}))
+           (POST "/echo" [] (test-echo))
+
+           (GET "/" request (test-index))
 
            (POST "/courses" [] (fn [request]
                                  (let [params (:params request)]
