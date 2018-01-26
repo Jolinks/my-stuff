@@ -15,6 +15,15 @@
 
 (defentity courses)
 
+(declare testweb)
+
+(defentity testweb)
+
+(defn create-testweb! [c]
+  (println "create testweb:" c)
+  (insert testweb
+          (values c)))
+
 (defn get-course [id]
   (let [cs (select courses
                    (where {:id id}))]
@@ -55,6 +64,7 @@
 (defn test-echo []
   (fn [request]
     (let [params (:params request)]
+      (create-testweb! {:echo (:echo params)})
       (response (str "you have inputted: " (:echo params))))))
 
 (defn test-index []
