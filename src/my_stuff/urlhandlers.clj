@@ -59,7 +59,7 @@
 (init-courses!)
 
 (defn test-hello []
-  (response "Worl")
+  (response "World")
   )
 
 (defn test-echo []
@@ -80,6 +80,18 @@
       (response (str (:text json)))
       )))
 
+(defn incoming []
+  (fn [request]
+    (if (= (:content-type request) "application/json")
+      (let [body (:body request)]
+        (response (str (get body "text"))))
+      (let [params (:params request)
+            jsonstr (:payload params)
+            json (clojure.data.json/read-str jsonstr :key-fn keyword)]
+        (response (str (:text json)))
+        ))
+    ))
+
 (defroutes app-routes
 
            (GET "/hello" [] (test-hello))
@@ -89,6 +101,8 @@
            (GET "/" request (test-index))
 
            (POST "/incoming" [] (test-incoming))
+
+           (POST "/test/incoming" [] (incoming))
 
            (POST "/courses" [] (fn [request]
                                  (let [params (:params request)]
