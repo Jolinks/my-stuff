@@ -1,4 +1,5 @@
 (ns my-stuff.urlhandlers
+  (:require clojure.data.json)
   (:use [compojure.core :only [GET POST PUT DELETE defroutes]]
         [compojure.route :only [not-found]]
         korma.db
@@ -58,7 +59,7 @@
 (init-courses!)
 
 (defn test-hello []
-  (response "World")
+  (response "Worl")
   )
 
 (defn test-echo []
@@ -73,6 +74,12 @@
                      :name "SJK"
                      :courses (get-courses)}}))
 
+(defn test-incoming []
+  (fn [request]
+    (let [params (:params request) jsonstr (:json params) json (clojure.data.json/read-str jsonstr :key-fn keyword)]
+      (response (str (:text json)))
+      )))
+
 (defroutes app-routes
 
            (GET "/hello" [] (test-hello))
@@ -80,6 +87,8 @@
            (POST "/echo" [] (test-echo))
 
            (GET "/" request (test-index))
+
+           (POST "/incoming" [] (test-incoming))
 
            (POST "/courses" [] (fn [request]
                                  (let [params (:params request)]
