@@ -6,10 +6,10 @@
         korma.core
         [my-stuff.response :only [response]]))
 
-(defdb korma-db (mysql {:db "school",
-                        :host "localhost",
-                        :port 3306,
-                        :user "root",
+(defdb korma-db (mysql {:db       "school",
+                        :host     "localhost",
+                        :port     3306,
+                        :user     "root",
                         :password "bearywork"}))
 
 (declare courses)
@@ -49,9 +49,9 @@
 
 (defn init-courses! []
   (if (empty? (get-courses))
-    (let [cs [{ :id "c-101", :name "Clojure", :price 19.9, :online true, :days 20 },
-              { :id "c-102", :name "Java",    :price 9.9,  :online true, :days 15 },
-              { :id "c-103", :name "Python",  :price 15.0, :online true, :days 18 }]]
+    (let [cs [{:id "c-101", :name "Clojure", :price 19.9, :online true, :days 20},
+              {:id "c-102", :name "Java", :price 9.9, :online true, :days 15},
+              {:id "c-103", :name "Python", :price 15.0, :online true, :days 18}]]
       (println "init courses...")
       (dorun
         (map create-course! cs)))))
@@ -70,9 +70,9 @@
 
 (defn test-index []
   (response {:template "index.html",
-             :model {:id "20180125"
-                     :name "SJK"
-                     :courses (get-courses)}}))
+             :model    {:id      "20180125"
+                        :name    "SJK"
+                        :courses (get-courses)}}))
 
 (defn test-incoming []
   (fn [request]
@@ -100,20 +100,20 @@
 
            (GET "/" request (test-index))
 
-           (POST "/incoming" [] (test-incoming))
+           (POST "/incoming" [] (incoming))
 
-           (POST "/test/incoming" [] (incoming))
+           (POST "/test/incoming" [] (test-incoming))
 
            (POST "/courses" [] (fn [request]
                                  (let [params (:params request)]
-                                   (create-course! {:id (str "c-" (System/currentTimeMillis)),
-                                                    :name (:name params),
-                                                    :price 8.8,
+                                   (create-course! {:id     (str "c-" (System/currentTimeMillis)),
+                                                    :name   (:name params),
+                                                    :price  8.8,
                                                     :online true,
-                                                    :days 7})
+                                                    :days   7})
                                    (response (str "You have created course: " (:name params))))))
 
-           (GET "/rest/courses" [] (response { :courses (get-courses) }))
+           (GET "/rest/courses" [] (response {:courses (get-courses)}))
 
            (POST "/rest/courses" [] (fn [request]
                                       (let [c (:body request)

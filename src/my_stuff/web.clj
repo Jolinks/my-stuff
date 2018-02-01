@@ -15,13 +15,13 @@
 (def app
   (-> urlhandlers/app-routes
       (resource/wrap-resource (clojure.java.io/resource "resources")) ;; static resource
-      templating/wrap-template-response  ;; render template
-      json/wrap-json-response            ;; render json
-      json/wrap-json-body                ;; request json
-      stacktrace/wrap-stacktrace-web     ;; wrap-stacktrace-log
-      keyword-params/wrap-keyword-params ;; convert parameter name to keyword
-      cookies/wrap-cookies ;; get / set cookies
-      params/wrap-params   ;; query string and url-encoded form
+      templating/wrap-template-response                     ;; render template
+      json/wrap-json-response                               ;; render json
+      json/wrap-json-body                                   ;; request json
+      stacktrace/wrap-stacktrace-web                        ;; wrap-stacktrace-log
+      keyword-params/wrap-keyword-params                    ;; convert parameter name to keyword
+      cookies/wrap-cookies                                  ;; get / set cookies
+      params/wrap-params                                    ;; query string and url-encoded form
       ))
 
 ;; start web server
