@@ -4,7 +4,7 @@
         [compojure.route :only [not-found]]
         korma.db
         korma.core
-        [ring.util.response :only [response]]))
+        [my-stuff.response :only [response]]))
 
 (defdb korma-db (mysql {:db "school",
                         :host "localhost",
