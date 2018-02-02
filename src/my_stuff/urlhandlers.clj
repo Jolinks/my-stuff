@@ -20,6 +20,15 @@
 
 (defentity testweb)
 
+(declare incoming)
+
+(defentity incoming)
+
+(defn create-incoming! [c]
+  (println "create incoming:" c)
+  (insert incoming
+          (values c)))
+
 (defn create-testweb! [c]
   (println "create testweb:" c)
   (insert testweb
@@ -80,14 +89,16 @@
       (response (str (:text json)))
       )))
 
-(defn incoming []
+(defn incoming-temp [bw_id channel_id]
   (fn [request]
     (if (= (:content-type request) "application/json")
       (let [body (:body request)]
+        (create-incoming! {:bw_id bw_id, :channel_id channel_id, :text (str (get body "text"))})
         (response (str (get body "text"))))
       (let [params (:params request)
             jsonstr (:payload params)
             json (clojure.data.json/read-str jsonstr :key-fn keyword)]
+        (create-incoming! {:bw_id bw_id, :channel_id channel_id, :text (str (:text json))})
         (response (str (:text json)))
         ))
     ))
@@ -100,7 +111,7 @@
 
            (GET "/" request (test-index))
 
-           (POST "/incoming" [] (incoming))
+           (POST "/incoming/=:bw_id/:channel_id" [bw_id channel_id] (incoming-temp bw_id channel_id))
 
            (POST "/test/incoming" [] (test-incoming))
 
